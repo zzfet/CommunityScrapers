@@ -7,34 +7,33 @@ sceneByURL:
     scraper: c4sSceneScraper
 
 sceneByName:
-  action: scrapeXPath
-  queryURL: https://www.clips4sale.com/clips/search/{}/category/0/storesPage/1/clipsPage/1
+  action: scrapeJson
+  queryURL: https://www.clips4sale.com/clips/search/{}/category/0/storesPage/1/clipsPage/1?_data=routes/($lang).clips.search.$
   scraper: c4sSearch
 sceneByQueryFragment:
   action: scrapeXPath
   queryURL: "{url}"
   scraper: c4sSceneScraper
 
-xPathScrapers:
+jsonScrapers:
   c4sSearch:
-    common:
-      $card: //figure[contains(@class, "splide__slide")]
     scene:
       Title:
-        selector: $card/@aria-label
+        selector: data.clips.#.title
         postProcess:
           - replace:
               - regex: <\/?em>
                 with: ""
       URL:
-        selector: $card//a[contains(@class, "search-clip__title")]/@href
+        selector: data.clips.#.link
         postProcess:
           - replace:
               - regex: ^
                 with: https://www.clips4sale.com
       Image:
-        selector: $card//img/@src
+        selector: data.clips.#.thumb
 
+xPathScrapers:
   c4sSceneScraper:
     common:
       $scene: //figure[contains(@class, "mediabook-preview")]
